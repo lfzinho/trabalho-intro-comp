@@ -1,2 +1,2 @@
 # trabalho-intro-comp
-Animating SVG icons for my PONG game.
+Animating SVG icons using CSS for my PONG game.
