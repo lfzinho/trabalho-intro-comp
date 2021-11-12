@@ -1,2 +1,2 @@
 # trabalho-intro-comp
-Animating SVG icons using CSS for my PONG game.
+Canvas com fogos de artifício e formação de polígonos com pontos aleatórios
