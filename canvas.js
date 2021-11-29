@@ -361,7 +361,7 @@ function get_polygon() {
 // >>> Loop que processa todas as coisas
 var frame = 0;
 function process() {
-    c.fillStyle = "#131313";
+    c.fillStyle = "#132645";
     c.fillRect(0, 0, window.innerWidth, window.innerWidth);
     c.save();
 
