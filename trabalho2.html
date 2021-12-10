@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Readex+Pro&display=swap" rel="stylesheet">
+</head>
+
+<body style="font-family: 'Readex Pro', sans-serif; background-color: lemonchiffon;">
+
+	<!-- Imagem -->
+	<h1>Imagem trabalhada:</h1>
+	<canvas id="imagemOriginal" width="900" height="600"></canvas>
+
+	<!-- Exercício 1 -->
+
+	<h1> Exercício 1: Plotando gráfico RGB </h1>
+	Fizemos uma função que passa por cada pixel, adiciona a sua cor de vermelho, verde e azul a 
+	um respectivo dicionário de frequências de cada cor e, ao final, usa esses dicionários para 
+	plotar os gráficos usando a função "lineTo()" do canvas.
+
+<figure>
+	<canvas id="graphRGB" width="256" height="400" style="border: 2px solid;"></canvas>
+<figcaption>
+		Gráfico RGB.
+	</figcaption>
+</figure>
+
+<script>
+	var canvasOriginal = document.getElementById("imagemOriginal");
+	var ctxOriginal = canvasOriginal.getContext("2d");
+	
+	var canvasOut = document.getElementById("graphRGB");
+	var canvasRGB = canvasOut.getContext("2d");
+	
+	var imgOriginal = new Image();
+	var imgDataOut = new Image();
+	var imgUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/%D0%A8%D0%BF%D0%B8%D1%86%D1%96_3.jpg/1024px-%D0%A8%D0%BF%D0%B8%D1%86%D1%96_3.jpg";
+   
+	imgOriginal.crossOrigin = '';
+	imgDataOut.crossOrigin = '';
+    imgOriginal.src = imgUrl;
+	imgOriginal.onload = function(){
+		ctxOriginal.drawImage(imgOriginal, 0, 0);
+
+		imgDataOut = ctxOriginal.getImageData(0, 0, 900, 600);
+		dict_r = {};
+		dict_g = {};
+		dict_b = {};
+		
+
+		// passa por cada pixel e conta ele no respectivo dicionário de frequências
+		for (let i = 0; i < imgDataOut.data.length; i += 4) {
+
+			// r
+			if ( isNaN(dict_r[imgDataOut.data[i]]) ) 
+			{ dict_r[imgDataOut.data[i]] = 0};
+			
+			dict_r[imgDataOut.data[i]] += 1;
+
+			// g
+			if ( isNaN(dict_g[imgDataOut.data[i+1]]) ) 
+			{ dict_g[imgDataOut.data[i+1]] = 0};
+
+			dict_g[imgDataOut.data[i+1]] += 1;
+
+			// b
+			if ( isNaN(dict_b[imgDataOut.data[i+2]]) ) 
+			{ dict_b[imgDataOut.data[i+2]] = 0};
+
+			dict_b[imgDataOut.data[i+2]] += 1;
+
+		}
+
+		
+		// plota o gráfico RGB
+		let peso_h = 50; // regula a altura das barras
+		let bottom = 400; //altura da imagem do plot
+		for (let i = 0; i < 255; i += 1) {
+			if ( !isNaN(dict_r[i]) ) {
+				canvasRGB.beginPath(); 
+				canvasRGB.moveTo(i, bottom);  
+				canvasRGB.lineTo(i, bottom - (dict_r[i]/peso_h));
+				canvasRGB.strokeStyle = '#ff0000aa';
+				canvasRGB.stroke();  
+			}};
+
+		for (let i = 0; i < 255; i += 1) {
+			if ( !isNaN(dict_g[i]) ) {
+				canvasRGB.beginPath(); 
+				canvasRGB.moveTo(i, bottom);  
+				canvasRGB.lineTo(i, bottom - (dict_g[i]/peso_h));
+				canvasRGB.strokeStyle = '#00ff00aa';
+				canvasRGB.stroke();  
+			}};
+
+		for (let i = 0; i < 255; i += 1) {
+			if ( !isNaN(dict_b[i]) ) {
+				canvasRGB.beginPath(); 
+				canvasRGB.moveTo(i, bottom);  
+				canvasRGB.lineTo(i, bottom - (dict_b[i]/peso_h));
+				canvasRGB.strokeStyle = '#0000ffaa';
+				canvasRGB.stroke();  
+			}};
+};	    
+</script>
+	
+
+	<!-- Exercício 2 -->
+	<h1> Exercício 2: Plotando gráfico da Luminância </h1>
+	O processo aqui foi bem semelhante ao anterior, com a excessão de que agora utilizamos, antes do processo 
+	de plotagem do gráfico, uma função retirada da <a href="https://css-tricks.com/converting-color-spaces-in-javascript/">internet</a> 
+	que converte a imagem do modo RGB para o modo HSL, e então plotamos apenas a luminância.
+
+<figure>
+	<canvas id="graphluminancia" width="100" height="400" style="border: 2px solid; background-color: black;"></canvas>
+<figcaption>
+		Gráfico de luminância.
+	</figcaption>
+</figure>
+
+<script>
+
+	// função copiada inteira e descaradamente do site fornecido
+	function RGBToL(r,g,b) {
+	// Make r, g, and b fractions of 1
+	r /= 255;
+	g /= 255;
+	b /= 255;
+
+	// Find greatest and smallest channel values
+	let cmin = Math.min(r,g,b),
+		cmax = Math.max(r,g,b),
+		delta = cmax - cmin,
+		h = 0,
+		s = 0,
+		l = 0;
+
+	// Calculate hue
+	// No difference
+	if (delta == 0)
+		h = 0;
+	// Red is max
+	else if (cmax == r)
+		h = ((g - b) / delta) % 6;
+	// Green is max
+	else if (cmax == g)
+		h = (b - r) / delta + 2;
+	// Blue is max
+	else
+		h = (r - g) / delta + 4;
+
+	h = Math.round(h * 60);
+		
+	// Make negative hues positive behind 360°
+	if (h < 0)
+		h += 360;
+	
+	// Calculate lightness
+		l = (cmax + cmin) / 2;
+
+	// Calculate saturation
+	s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+	
+	// Multiply l and s by 100
+	s = +(s * 100).toFixed(1);
+	l = +(l * 100).toFixed(1);
+
+	return l;
+	}
+
+
+	
+	var canvasOriginal = document.getElementById("imagemOriginal");
+	var ctxOriginal = canvasOriginal.getContext("2d");
+	
+	var canvasOut = document.getElementById("graphluminancia");
+	var canvaslum = canvasOut.getContext("2d");
+	
+	var imgOriginal = new Image();
+	var imgDataOut = new Image();
+
+	var imgUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/%D0%A8%D0%BF%D0%B8%D1%86%D1%96_3.jpg/1024px-%D0%A8%D0%BF%D0%B8%D1%86%D1%96_3.jpg";
+	
+	imgOriginal.crossOrigin = '';
+	imgDataOut.crossOrigin = '';
+    imgOriginal.src = imgUrl;
+	imgOriginal.onload = function(){
+		ctxOriginal.drawImage(imgOriginal, 0, 0);
+		
+		imgDataOut = ctxOriginal.getImageData(0, 0, 900, 600);
+
+		dict_l = {};
+		
+
+		// passa por cada pixel e conta ele no respectivo dicionário de frequência
+		for (let i = 0; i < imgDataOut.data.length; i += 4) {
+
+			l = Math.round(RGBToL(imgDataOut.data[i], imgDataOut.data[i+1], imgDataOut.data[i+2]));
+
+			if ( isNaN(dict_l[l]) ) 
+			{ dict_l[l] = 0};
+			dict_l[l] += 1;
+
+		}
+
+		// plota o gráfico de luminância
+		let peso_h = 70; // regula a altura das barras
+		let bottom = 400; //altura da imagem do plot
+		for (let i = 0; i < 255; i += 1) {
+			if ( !isNaN(dict_l[i]) ) {
+				canvaslum.beginPath(); 
+				canvaslum.moveTo(i, bottom);  
+				canvaslum.lineTo(i, bottom - (dict_l[i]/peso_h));
+				canvaslum.strokeStyle = '#ffffffaa';
+				canvaslum.stroke();
+			}};
+};	    
+</script>
+
+
+	<!-- Exercício 3 -->
+
+	<h1> Exercício 3: Alterando o Contraste da Foto </h1>
+	Aqui, o truque é passar por cada pixel e aplicar a seguinte função: <br><br>
+	<i>Nova luminância = média da luminância total + (luminância atual - média da luminância total) * peso</i> <br><br>
+	Além disso, foi necessário novamente fazer a conversão RGB -> HSL, para que então pudéssemos transformar a luminância e,
+	em seguida, converter novamente para RGB  e plotar a imagem.
+
+	<figure>
+	<canvas id="imagemOutput" width="900" height="600"></canvas>
+	<canvas id="graphluminancia2" width="100" height="400" style="border: 2px solid; background-color: black;"></canvas>
+<figcaption>
+		Imagem com contraste elevado e novo gráfico de luminância ao lado.
+	</figcaption>
+</figure>
+	<div style="margin-left: 3em;">
+	<h2> Alguns pesos interessantes para brincar com o contraste:</h2> <br>
+	<button onclick="newpeso(1)"> 1 </button>: Contraste inalterado pois o peso é 1 😐; <br>
+	<button onclick="newpeso(1.5)"> 1.5 </button>: Contraste bonitinho que deixa a imagem bem espalhada 😀; <br>
+	<button onclick="newpeso(2.5)"> 2.5 </button>: Contraste exagerado que já não fica tão belo 😰; <br>
+	<button onclick="newpeso(0)"> 0 </button>: Todos os pixels ficam com a luminância igual a média 📊; <br>
+	<button onclick="newpeso(200)"> 200 </button>: Praticamente preto e branco 🖤; <br>
+	<button onclick="newpeso(-200)"> -200 </button>: Praticamente preto e branco, porém invertido 🤍; <br>
+	<button onclick="newpeso(Infinity)"> Infinity </button>: Sinceramente não sei explicar 🤯; <br>
+	</div>
+
+<script>
+
+	// Interatividade do usuário
+	let peso = 1.5;
+	let cap = true;
+
+	function newpeso(param) {
+
+		if (param == Infinity) {cap = false}
+		else {cap = true};
+
+		peso = param;
+		imgOriginal.onload();
+
+	}
+
+
+
+
+	//Funções copiadas descaradamente do site fornecido
+	function RGBToHSL(r,g,b) {
+	// Make r, g, and b fractions of 1
+	r /= 255;
+	g /= 255;
+	b /= 255;
+
+	// Find greatest and smallest channel values
+	let cmin = Math.min(r,g,b),
+		cmax = Math.max(r,g,b),
+		delta = cmax - cmin,
+		h = 0,
+		s = 0,
+		l = 0;
+
+	// Calculate hue
+	// No difference
+	if (delta == 0)
+		h = 0;
+	// Red is max
+	else if (cmax == r)
+		h = ((g - b) / delta) % 6;
+	// Green is max
+	else if (cmax == g)
+		h = (b - r) / delta + 2;
+	// Blue is max
+	else
+		h = (r - g) / delta + 4;
+
+	h = Math.round(h * 60);
+		
+	// Make negative hues positive behind 360°
+	if (h < 0)
+		h += 360;
+	
+	// Calculate lightness
+		l = (cmax + cmin) / 2;
+
+	// Calculate saturation
+	s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+	
+	// Multiply l and s by 100
+	s = +(s * 100).toFixed(1);
+	l = +(l * 100).toFixed(1);
+
+	return [h, s, l];
+	}
+
+	function HSLToRGB(h,s,l) {
+	// Must be fractions of 1
+	s /= 100;
+	l /= 100;
+
+	let c = (1 - Math.abs(2 * l - 1)) * s,
+		x = c * (1 - Math.abs((h / 60) % 2 - 1)),
+		m = l - c/2,
+		r = 0,
+		g = 0,
+		b = 0;
+
+		if (0 <= h && h < 60) {
+			r = c; g = x; b = 0;  
+		} else if (60 <= h && h < 120) {
+			r = x; g = c; b = 0;
+		} else if (120 <= h && h < 180) {
+			r = 0; g = c; b = x;
+		} else if (180 <= h && h < 240) {
+			r = 0; g = x; b = c;
+		} else if (240 <= h && h < 300) {
+			r = x; g = 0; b = c;
+		} else if (300 <= h && h < 360) {
+			r = c; g = 0; b = x;
+		}
+		r = Math.round((r + m) * 255);
+		g = Math.round((g + m) * 255);
+		b = Math.round((b + m) * 255);
+
+		return [r, g, b];
+	}
+
+	var canvasOut = document.getElementById("imagemOutput");
+	var ctxOutput = canvasOut.getContext("2d");
+	var graphlum2 = document.getElementById("graphluminancia2");
+	var canvaslum2 = graphlum2.getContext("2d");
+	
+	var imgOriginal = new Image();
+	var imgDataOut = new Image();
+	
+	var imgUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/%D0%A8%D0%BF%D0%B8%D1%86%D1%96_3.jpg/1024px-%D0%A8%D0%BF%D0%B8%D1%86%D1%96_3.jpg";
+
+	imgOriginal.crossOrigin = '';
+	imgDataOut.crossOrigin = '';
+    imgOriginal.src = imgUrl;
+	imgOriginal.onload = function(){
+		ctxOriginal.drawImage(imgOriginal, 0, 0);
+		ctxOutput.drawImage(imgOriginal, 0, 0);
+		
+		imgDataOut = ctxOriginal.getImageData(0, 0, 900, 600);
+		dict_h = 0;
+		dict_s = 0;
+		dict_l = {};
+		
+		// Passa por cada pixel e calcula a média de luminância da imagem
+		let media_l = 0;
+		let pixels = 0;
+		for (let i = 0; i < imgDataOut.data.length; i += 4) {
+
+			let hsl = RGBToHSL(imgDataOut.data[i], imgDataOut.data[i+1], imgDataOut.data[i+2]);
+			
+			let l = hsl[2];
+			pixels ++;
+			media_l += l;
+		}
+		media_l /= pixels;
+
+
+		/* Reescreve a imagem transformando tudo pra HSL,
+		alterando a luminância de acordo com o peso previamente fornecido,
+		depois reconvertendo o HSL para RGB  e então plotando a
+		nova imagem */
+
+		let nova_img = ctxOriginal.getImageData(0, 0, 900, 600);
+		for (let i = 0; i < imgDataOut.data.length; i += 4) {
+
+			let hsl = RGBToHSL(imgDataOut.data[i], imgDataOut.data[i+1], imgDataOut.data[i+2]);
+
+			h = hsl[0];
+			s = hsl[1];
+
+			// redefine as luminâncias
+			l = media_l + (hsl[2] - media_l)*peso;
+
+			if (cap){ //limita entre 0 e 100 se o peso não for Infinity
+			if (l < 0) {l = 0};
+			if (l > 100) {l = 100};
+			};
+
+			let rgb = HSLToRGB(h, s, l);
+
+			nova_img.data[i] = rgb[0];
+			nova_img.data[i+1] = rgb[1];
+			nova_img.data[i+2] = rgb[2];
+
+		}
+		
+		ctxOutput.putImageData(nova_img, 0, 0);	
+
+		// Faz novo gráfico de luminância
+		dict_l = {};
+		
+
+		// passa por cada pixel e conta ele no respectivo dicionário de frequência
+		for (let i = 0; i < nova_img.data.length; i += 4) {
+
+			l = Math.round(RGBToL(nova_img.data[i], nova_img.data[i+1], nova_img.data[i+2]));
+
+			if ( isNaN(dict_l[l]) ) 
+			{ dict_l[l] = 0};
+			dict_l[l] += 1;
+
+		}
+
+		// plota o gráfico de luminância
+		let peso_h = 70; // regula a altura das barras
+		let bottom = 400; //altura da imagem do plot
+		canvaslum2.clearRect(0, 0, 100, 400); // apaga tudo que tinha antes
+		for (let i = 0; i < 100; i += 1) {
+			if ( !isNaN(dict_l[i]) ) {
+				canvaslum2.beginPath(); 
+				canvaslum2.moveTo(i, bottom);  
+				canvaslum2.lineTo(i, bottom - (dict_l[i]/peso_h));
+				canvaslum2.strokeStyle = '#ffffffaa';
+				canvaslum2.stroke();
+			}};
+};	    
+</script>
+</body>
+</html>
