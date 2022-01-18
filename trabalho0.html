@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- CSS básico para formatação da página-->
+    <style>
+        @charset "UTF-8";
+        @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;900&display=swap');
+        * {
+        font-family: 'Source Sans Pro', sans-serif;
+        text-align: center;
+        color: white;
+
+        transition: all 0s;
+        }
+
+        p, h2{
+            font-weight: 200;
+        }
+
+        body {
+            background-color: #1f1f1f;
+        }
+
+        rect {
+            transform-origin: center;
+            transform-box: fill-box;
+        }
+        
+        button{
+            width: 160px;
+            color: #272727;
+            font-size: 1em;
+            font-weight: 900;
+        }
+    </style>
+</head>
+<body>
+    <!-- Texto introdutório-->
+    <h1> Animações SVG : PONG</h1>
+    <h2> Introdução à Computação Gráfica</h2>
+    <p>
+        No trabalho de Linguagens de Programação, o meu grupo fez um site para jogar Pong online. Porém, como
+        todo trabalho na faculdade, ele foi feito um pouco às pressas, e algumas coisas ficaram um pouco menos
+        polidas do que poderiam. Por isso, nesse trabalho de de Computação Gráfica, decidi criar algumas animações
+        SVG+CSS para servirem de ícone aos botões dos modos de jogo, parte de grande destaque na página principal.
+    </p>
+    <p>
+        As animações seguem abaixo, e o link para a página do jogo (ainda não atualizada com as animações) pode ser acessado <a href="https://lfzinho.github.io/PONG/index.html">aqui</a>.
+    </p>
+
+    <button onclick="on_anim()">Ligar animações</button>
+    <button onclick="off_anim()">Desligar animações</button>
+    <br><br><br><br>
+
+    <!-- Animação 1-->
+    <svg id="draw1" class="animated" width="200", height="200">
+        <defs>
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#0059ff;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#5f00cc;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+
+        <rect x="0" y="0" width="200" height="200" fill= "url(#grad)" ></rect>
+
+        <rect class="animated pad1" transform="skewX(10)" x="20" y="5" width="95" height="20" fill="white" rx="5"></rect>
+
+        <rect class="animated pad2" transform="skewX(10)" x="90" y="175" width="95" height="20" fill="white" rx="5"></rect>
+
+        <circle class="animated ball" cx=110 cy=130 r=10 fill=white></circle>
+
+        <style>
+            @keyframes ball {
+                0%   {transform: translate(0, 0);}
+                15%  {transform: translate(-14px, 35px);}
+                65%  {transform: translate(40px, -100px);}
+                100% {transform: translate(0, 0);}
+            }
+
+            #draw1.animated>.ball.animated {
+                animation-name: ball;
+                animation-duration: 2s;
+                animation-iteration-count: infinite;
+                animation-timing-function: linear;
+            }
+
+            @keyframes pad2 {
+                0%   {transform: skewX(10deg) translateX(0);}
+                15%  {transform: skewX(10deg) translateX(-30px);}
+                50%  {transform: skewX(10deg) translateX(-70px);}
+                100% {transform: skewX(10deg) translateX(0);}
+            }
+
+            #draw1.animated>.pad2.animated {
+                animation-name: pad2;
+                animation-duration: 2s;
+                animation-iteration-count: infinite;
+            }
+
+            @keyframes pad1 {
+                0%   {transform: skewX(10deg) translateX(0);}
+                25%  {transform: skewX(10deg) translateX(30px);}
+                65%  {transform: skewX(10deg) translateX(80px);}
+                100% {transform: skewX(10deg) translateX(0);}
+            }
+
+            #draw1.animated>.pad1.animated {
+                animation-name: pad1;
+                animation-duration: 2s;
+                animation-iteration-count: infinite;
+            }
+        </style>
+    </svg>
+
+    <!-- Animação 2 -->
+    <svg id="draw2" class="animated" width="200", height="200">
+        <rect x="0" y="0" width="200" height="200" fill="url(#grad)"></rect>
+
+        <circle class="animated ball" cx=30 cy=30 r=12 fill=white></circle>
+    
+        <rect class="animated pad1" transform="rotate(-10) skewX(10)" x="50" y="100" width="105" height="25" fill="white" rx="5"></rect>
+
+        <style>
+            @keyframes ball2 {
+                10%  {transform: translate(60px, 63px);}
+                25%  {transform: translate(60px, -50px);}
+                26%  {transform: translate(180px, -50px);}
+                62%  {transform: translate(180px, -50px);}
+                75%  {transform: translate(75px, 40px);}
+                90% {transform: translate(-60px, -60px);}
+            }
+    
+            #draw2.animated>.ball.animated {
+                animation-name: ball2;
+                animation-duration: 2s;
+                animation-iteration-count: infinite;
+                animation-timing-function: linear;
+            }
+    
+            @keyframes pad12 {
+                10%  {transform: rotate(-15deg) skewX(10deg);}
+                50%  {transform: rotate(-0deg) skewX(10deg);}
+                75%  {transform: rotate(-25deg) skewX(10deg) translate(20px, -20px);}
+                90%  {transform: rotate(5deg) skewX(10deg) translate(-10px, 0px);}
+            }
+    
+            #draw2.animated>.pad1.animated {
+                animation-name: pad12;
+                animation-duration: 2s;
+                animation-iteration-count: infinite;
+            }
+        </style>
+    </svg>
+    
+    <!-- Segundo texto -->
+    <h2>Sobre o processo</h2>
+    <p>
+        O primeiro passo foi construir os ícones estáticos em SVG. Para isso, precisei utilizar algumas ferramentas mais avançadas, como as
+        transformações e o gradiente de fundo. Porém, a parte mais complicada desse passo ainda foi posicionar os elementos SVG de tal forma
+        em que eles ficassem perfeitamente como eu havia planejado anteriormente, algo um tanto complexo de ser feito sem nenhum programa de 
+        interface gráfica :c . Os resultados dessa parte podem ser vizualizados pressionando o botão "desativar animações".
+    </p>
+    <p>
+        Depois disso, era hora de animar os ícones. Pesquisando um pouco sobre o assunto, descobri que os navegadores atuais têm abandonado o 
+        suporte às animações do SVG nativo, e que a técnica mais indicada seria animá-los através do CSS. Por isso, optei por seguir a recomendação 
+        e fiz a tarefa utilizando a tecnologia mais nova. Nesse aspecto, muito me impressionou o quanto as duas linguagens se dão bem entre si; e
+        posso dizer que, mais uma vez, meu maior trabalho não foi no entendimento da matéria, mas sim em aperfeiçoar minhas animações de modo a
+        ficarem mais flúidas e naturais.
+    </p>
+    <p>
+        No fim, apesar de a experiência de fazer animação por código não ter sido uma das mais rápidas e eficientes, achei muito divertido 
+        descobrir que é possível fazer animações complexas com tão pouco aparato de software e, além disso, achei muito interessante entender
+        mais a fundo ferramentas como o path e curvas de Bézier, tão comuns no dia a dia, mas que geralmente não nos esforçamos para conhecê-las.
+    </p>
+
+    
+    <!-- JavaScript básico para dar funcionalidade aos botões -->
+    <script>
+        function on_anim(){
+            document.getElementById("draw1").classList.add("animated");
+            document.getElementById("draw2").classList.add("animated");
+        }
+        function off_anim(){
+            document.getElementById("draw1").classList.remove("animated");
+            document.getElementById("draw2").classList.remove("animated");
+        }
+    </script>
+</body>
+</html>
